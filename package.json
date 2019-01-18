@@ -9,6 +9,8 @@
     "@babel/preset-env": "^7.2.3",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
+    "babel-plugin-styled-components": "^1.10.0",
+    "babel-plugin-transform-async-to-promises": "^0.8.4",
     "express": "^4.16.4",
     "loader-utils": "^1.2.3",
     "webpack": "^4.28.4",

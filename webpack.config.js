@@ -38,7 +38,26 @@ module.exports = {
           {
             loader: require.resolve('babel-loader'),
             query: {
-              presets: ['@babel/preset-env', '@babel/preset-react']
+              presets: [
+                ['@babel/preset-env', {
+                  modules: false,
+                  useBuiltIns: 'entry',
+                  exclude: ['transform-regenerator']
+                }],
+                '@babel/preset-react'
+              ],
+              plugins: [
+                ['babel-plugin-transform-async-to-promises', {
+                  inlineHelpers: true,
+                  externalHelpers: false
+                }],
+                ['babel-plugin-styled-components', {
+                  displayName: true,
+                  ssr: true,
+                  minify: false
+                }],
+                'react-hot-loader/babel'
+              ]
             }
           }
         ]
