@@ -1,4 +1,5 @@
 const path = require('path');
+const { HotModuleReplacementPlugin } = require('webpack');
 const WriteFilePlugin = require('write-file-webpack-plugin');
 
 const context = process.cwd();
@@ -12,7 +13,10 @@ const resourceCondition = {
 module.exports = {
   context,
   entry: {
-    'main.js': require.resolve('./index'),
+    'main.js': [
+      'webpack-hot-middleware/client?overlay=true&path=/_build/hmr',
+      require.resolve('./index')
+    ]
   },
   mode: 'development',
   module: {
@@ -42,6 +46,7 @@ module.exports = {
     ],
   },
   plugins: [
+    new HotModuleReplacementPlugin(),
     new WriteFilePlugin()
   ],
   resolve: {

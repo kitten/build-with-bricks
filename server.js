@@ -3,6 +3,7 @@ const fs = require('fs');
 const express = require('express');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackHotMiddleware = require('webpack-hot-middleware');
 const { createElement: h } = require('react');
 const { renderToString } = require('react-dom/server');
 const { ServerStyleSheet } = require('styled-components');
@@ -19,6 +20,10 @@ const devMiddleware = webpackDevMiddleware(compiler, {
   publicPath: '/_build/'
 });
 
+const hotMiddleware = webpackHotMiddleware(compiler, {
+  path: '/_build/hmr'
+});
+
 purgeRequireCache(compiler);
 
 let isValid = false;
@@ -29,6 +34,7 @@ const waitUntilValid = new Promise(resolve => {
   });
 });
 
+app.use(hotMiddleware);
 app.use(devMiddleware);
 
 app.use((req, res, next) => {
