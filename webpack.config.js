@@ -18,6 +18,17 @@ module.exports = {
   module: {
     rules: [
       {
+        // Enforce this to run after other rules
+        enforce: 'post',
+        // We apply this to all files except html, css, scss, sass
+        resource: [resourceCondition],
+        use: [
+          {
+            loader: require.resolve('./utils/emitFileLoader.js'),
+          }
+        ]
+      },
+      {
         resource: [{ test: /\.js$/ }, resourceCondition],
         use: [
           {

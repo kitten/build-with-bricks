@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Cat } from 'react-kawaii';
+// import { Cat } from 'react-kawaii';
 
 const Container = styled.div`
   height: 100vh;
@@ -14,7 +14,8 @@ const Container = styled.div`
 
 const App = () => (
   <Container>
-    <Cat size={320} mood="lovestruck" color="rgb(255, 207, 0)" />
+    {/*<Cat size={320} mood="lovestruck" color="rgb(255, 207, 0)" />*/}
+    <h1>Hello World!</h1>
   </Container>
 );
 
