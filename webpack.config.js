@@ -1,9 +1,13 @@
 const path = require('path');
 const { HotModuleReplacementPlugin } = require('webpack');
 const WriteFilePlugin = require('write-file-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
+const isDev = process.env.NODE_ENV !== 'production';
 const context = process.cwd();
 const buildDir = path.resolve(context, '.build/');
+
+console.log({ isDev });
 
 const resourceCondition = {
   include: context,
@@ -14,11 +18,11 @@ module.exports = {
   context,
   entry: {
     'main.js': [
-      'webpack-hot-middleware/client?overlay=true&path=/_build/hmr',
+      isDev && 'webpack-hot-middleware/client?overlay=true&path=/_build/hmr',
       require.resolve('./index')
-    ]
+    ].filter(Boolean)
   },
-  mode: 'development',
+  mode: isDev ? 'development' : 'production',
   module: {
     rules: [
       {
@@ -56,8 +60,8 @@ module.exports = {
                   ssr: true,
                   minify: false
                 }],
-                'react-hot-loader/babel'
-              ]
+                isDev && 'react-hot-loader/babel'
+              ].filter(Boolean)
             }
           }
         ]
@@ -65,15 +69,23 @@ module.exports = {
     ],
   },
   plugins: [
-    new HotModuleReplacementPlugin(),
+    isDev && new HotModuleReplacementPlugin(),
     new WriteFilePlugin()
-  ],
+  ].filter(Boolean),
   resolve: {
     alias: {
       'scripts/app': require.resolve('./app')
     },
     symlinks: true,
     extensions: ['.js', '.json']
+  },
+  optimization: isDev ? {} : {
+    minimizer: [
+      new TerserPlugin({
+        cache: true,
+        parallel: true
+      })
+    ]
   },
   output: {
     path: buildDir,

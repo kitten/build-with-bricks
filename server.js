@@ -9,41 +9,52 @@ const { renderToString } = require('react-dom/server');
 const { ServerStyleSheet } = require('styled-components');
 
 const { purgeRequireCache } = require('./utils/purgeRequireCache');
+const isDev = process.env.NODE_ENV !== 'production';
 const webpackConfig = require('./webpack.config.js');
 const template = fs.readFileSync('./index.html', { encoding: 'utf8' });
 
 const app = express();
 
 const compiler = webpack(webpackConfig);
-const devMiddleware = webpackDevMiddleware(compiler, {
-  index: false,
-  publicPath: '/_build/'
-});
 
-const hotMiddleware = webpackHotMiddleware(compiler, {
-  path: '/_build/hmr'
-});
-
-purgeRequireCache(compiler);
-
-let isValid = false;
-const waitUntilValid = new Promise(resolve => {
-  devMiddleware.waitUntilValid(() => {
-    isValid = true;
-    resolve()
+if (isDev) {
+  const devMiddleware = webpackDevMiddleware(compiler, {
+    index: false,
+    publicPath: '/_build/'
   });
-});
 
-app.use(hotMiddleware);
-app.use(devMiddleware);
+  const hotMiddleware = webpackHotMiddleware(compiler, {
+    path: '/_build/hmr'
+  });
 
-app.use((req, res, next) => {
-  if (isValid) {
-    return next();
-  }
+  purgeRequireCache(compiler);
 
-  waitUntilValid.then(() => next());
-});
+  let isValid = false;
+  const waitUntilValid = new Promise(resolve => {
+    devMiddleware.waitUntilValid(() => {
+      isValid = true;
+      resolve()
+    });
+  });
+
+  app.use(hotMiddleware);
+  app.use(devMiddleware);
+
+  app.use((req, res, next) => {
+    if (isValid) {
+      return next();
+    }
+
+    waitUntilValid.then(() => next());
+  });
+} else {
+  const staticBuildMiddleware = express.static(webpackConfig.output.path, {
+    index: false,
+    redirect: false
+  });
+
+  app.use('/_build', staticBuildMiddleware);
+}
 
 app.get('*', (req, res) => {
   const app = require(path.join(webpackConfig.output.path, 'server/app.js'));
