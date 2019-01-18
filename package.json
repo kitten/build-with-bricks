@@ -1,0 +1,25 @@
+{
+  "name": "build-with-bricks",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.2.0",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "express": "^4.16.4",
+    "webpack": "^4.28.4",
+    "webpack-dev-middleware": "^3.5.1",
+    "webpack-hot-middleware": "^2.24.3",
+    "write-file-webpack-plugin": "^4.5.0"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.2.5",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-kawaii": "^0.10.0",
+    "styled-components": "^4.1.3"
+  }
+}
