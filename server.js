@@ -7,6 +7,7 @@ const { createElement: h } = require('react');
 const { renderToString } = require('react-dom/server');
 const { ServerStyleSheet } = require('styled-components');
 
+const { purgeRequireCache } = require('./utils/purgeRequireCache');
 const webpackConfig = require('./webpack.config.js');
 const template = fs.readFileSync('./index.html', { encoding: 'utf8' });
 
@@ -17,6 +18,8 @@ const devMiddleware = webpackDevMiddleware(compiler, {
   index: false,
   publicPath: '/_build/'
 });
+
+purgeRequireCache(compiler);
 
 let isValid = false;
 const waitUntilValid = new Promise(resolve => {
